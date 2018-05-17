@@ -8,12 +8,14 @@
 * `./foo`
 * Makefile
 
-### Няколко думи за памет и pointer-и (като цяло, не очакваме да работим с динамична памет)
+### Няколко думи за памет и pointer-и
 
 * `xxd`
 * little/big endianness
 * binary file
 * `char*`
+* malloc(3) `void *malloc(size_t size);`
+* free(3) `void free(void *ptr);`
 
 ## Системни примитиви
 ### `man man` - секция 3, Library calls (functions within program libraries)
