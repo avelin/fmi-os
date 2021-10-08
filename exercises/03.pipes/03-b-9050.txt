@@ -1,1 +1,1 @@
-Копирайте файл /srv/os/population.csv във вашата home директория.
+Копирайте файл <РЕПО>/exercises/data/population.csv във вашата home директория.
