@@ -17,6 +17,7 @@ int main (int argc, char* argv[])
 	if (execlp("/bin/ls", "ls", argv[1], 0) == -1) {
 		err(99, "err execling");
 	} else {
+// FIXME
 		printf("foobar\n");
 	}
 

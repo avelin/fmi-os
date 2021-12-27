@@ -7,11 +7,12 @@
 #include <err.h>
 #include <stdio.h>
 
-int main()
+int main(void)
 {
 	if (execl("/bin/sleep", "pesho", "60", 0) == -1) {
 		err(99, "err execling");
 	} else {
+// FIXME
 		printf("foobar\n");
 	}
 

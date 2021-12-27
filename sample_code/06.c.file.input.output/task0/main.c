@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int main()
+int main(void)
 {
 	uid_t me = getuid();
 	uid_t pretending = geteuid();

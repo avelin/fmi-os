@@ -34,6 +34,7 @@ int main (int argc, char* argv[]){
 		chars++;
 	}
 
-	printf("File %s has:\n%d number of lines.\n%d number of words.\n%d number of chars.\n", argv[1], lines, words, chars);
+	printf("File %s has:\n%d number of lines.\n%d number of words.\n%d number of chars.\n",
+		argv[1], lines, words, chars);
 	close(fd1);
 }

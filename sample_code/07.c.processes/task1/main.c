@@ -7,11 +7,12 @@
 #include <err.h>
 #include <stdio.h>
 
-int main ()
+int main(void)
 {
-	if (execl("/bin/date", "date", (char *)NULL) == -1) {
+	if (execl("/bin/date", "date", (char*)NULL) == -1) {
 		err(99, "err execling");
 	} else {
+// FIXME
 		printf("foobar\n");
 	}
 

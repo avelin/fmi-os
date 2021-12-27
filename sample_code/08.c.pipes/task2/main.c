@@ -4,6 +4,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <string.h>
+#include <stdio.h>
 
 int main(const int argc, const char* const argv[]) {
 
@@ -14,8 +15,10 @@ int main(const int argc, const char* const argv[]) {
 	int pf[2];
 
 	if (pipe(pf) == -1) {
-		errx(1, "Could not create pipe");
+		err(1, "Could not create pipe");
 	}
+
+	printf("%d %d\n", pf[0], pf[1]);
 
 	const pid_t child_pid = fork();
 	if (child_pid == -1) {

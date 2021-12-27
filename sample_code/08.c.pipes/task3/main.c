@@ -14,7 +14,7 @@ int main(const int argc, const char* const argv[]) {
 	int pf[2];
 
 	if (pipe(pf) == -1) {
-		errx(1, "Could not create pipe");
+		err(1, "Could not create pipe");
 	}
 
 	const pid_t child_pid = fork();

@@ -16,12 +16,12 @@ int main(int argc, char* argv[])
 
 	if (argc != 2) {
 		write(2, "err\n", 4);
-		exit(-1);
+		exit(1);
 	}
 
 	if ((fd1 = open(argv[1], O_RDONLY)) == -1) {
 		write(2, "File failed to open in read mode\n", 33);
-		exit(-1);
+		exit(1);
 	}
 
 	while (read(fd1, &c, 1)) {

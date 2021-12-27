@@ -23,25 +23,21 @@ int main(int argc, char* argv[]) {
 	const char* str2 = "bar\n";
 
 	if (write(fd, str1, 2) != 2) {
+/*	FIXME
 		const int savederrorcode = errno;
 		close(fd);
 		errno = savederrorcode;
+*/
 		err(1, "Could not write first two chars from parent");
 	}
 
 	const pid_t child_pid = fork();
 	if (child_pid == -1) {
-		const int savederrorcode = errno;
-		close(fd);
-		errno = savederrorcode;
 		err(1, "Could not fork.");
 	}
 
 	if (child_pid == 0) {
 		if (write(fd, str2, 4) != 4) {
-			const int savederrorcode = errno;
-			close(fd);
-			errno = savederrorcode;
 			err(1, "Could not write four chars from child.");
 		}
 		exit(0);
@@ -51,16 +47,10 @@ int main(int argc, char* argv[]) {
 	const pid_t wait_code = wait(&child_status);
 
 	if (wait_code == -1) {
-		const int savederrorcode = errno;
-		close(fd);
-		errno = savederrorcode;
 		err(1, "Could not wait for child.");
 	}
 
 	if (!WIFEXITED(child_status)) {
-		const int savederrorcode = errno;
-		close(fd);
-		errno = savederrorcode;
 		err(1, "Child did not terminate normally.");
 	}
 
@@ -69,9 +59,6 @@ int main(int argc, char* argv[]) {
 	}
 
 	if (write(fd, str1+2, 2) != 2) {
-		const int savederrorcode = errno;
-		close(fd);
-		errno = savederrorcode;
 		err(1, "Could not write the last two chars from parent");
 	}
 
