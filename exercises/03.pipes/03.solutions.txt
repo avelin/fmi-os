@@ -1,0 +1,621 @@
+ --- 03-a-0200 ---
+Сортирайте /etc/passwd лексикографски по поле UserID.
+
+s62625@astero:~$ sort -t ':' -k 3,3 /etc/passwd
+108 е след 1079
+
+
+--- 03-a-0201 ---
+Сортирайте /etc/passwd числово по поле UserID.
+(Открийте разликите с лексикографската сортировка)
+
+s62625@astero:~$ sort -t ':' -k 3,3n /etc/passwd
+108 е преди 1079
+
+
+--- 03-а-0210 ---
+Изведете само 1-ва и 5-та колона на файла /etc/passwd спрямо разделител ":".
+
+s62625@astero:~$ awk -F ':' '{print $1, $5}' /etc/passwd
+cut -d ':' -f 1,5 /etc/passwd
+
+
+--- 03-a-0211 ---
+Изведете съдържанието на файла /etc/passwd от 2-ри до 6-ти символ. 
+???на всеки ред или само на първия???
+
+cut -c 2-6 /etc/passwd
+
+
+--- 03-a-0212 ---
+Отпечатайте потребителските имена и техните home директории от /etc/passwd.
+
+s62625@astero:~$ cut -d ':' -f 5,6 /etc/passwd | tr ',' ':' | cut -d ':' -f 1,6
+cut -d ':' -f 1,6 /etc/passwd | tr ':' '\t'
+
+
+--- 03-a-0213 ---
+Отпечатайте втората колона на /etc/passwd, разделена спрямо символ '/'.
+
+s62625@astero:~$ cut -d '/' -f 2 /etc/passwd
+
+
+--- 03-a-1500 ---
+Изведете броя на байтовете в /etc/passwd.
+
+s62625@astero:~$ wc -c /etc/passwd
+
+Изведете броя на символите в /etc/passwd.
+
+s62625@astero:~$ wc -m /etc/passwd
+
+Изведете броя на редовете в /etc/passwd.
+
+s62625@astero:~$ wc -l /etc/passwd
+
+
+--- 03-a-2000 ---
+С отделни команди, извадете от файл /etc/passwd:
+- първите 12 реда
+
+s62625@astero:~$ head -n 12 /etc/passwd
+
+- първите 26 символа
+
+s62625@astero:~$ head -c 26 /etc/passwd
+
+- всички редове, освен последните 4
+
+s62625@astero:~$ tail -n +4 /etc/passwd
+
+- последните 17 реда
+
+s62625@astero:~$ tail -n 17 /etc/passwd
+
+- 151-я ред (или друг произволен, ако нямате достатъчно редове)
+
+s62625@astero:~$ head -n 151 /etc/passwd | tail -n 1
+
+- последните 4 символа от 13-ти ред (символът за нов ред не е част от реда)
+
+s62625@astero:~$ head -n 13 /etc/passwd | tail -n 1 | tail -c 5
+
+
+--- 03-a-3000 ---
+Запаметете във файл в своята home директория резултатът от командата `df -P`.
+
+s62625@astero:~$ df -P > dfcommand.txt
+
+Напишете команда, която извежда на екрана съдържанието на този файл, без първия ред (хедъра), сортирано по второ поле (numeric).
+
+s62625@astero:~$ tail -n +2 dfcommand.txt | sort -n -k 2,2
+
+
+--- 03-a-3100 ---
+Запазете само потребителските имена от /etc/passwd във файл users във вашата home директория.
+
+s62625@astero:~$ cut -d ':' -f 5 /etc/passwd | cut -d ',' -f 1 > users.txt
+
+
+--- 03-a-3500 ---
+Изпишете всички usernames от /etc/passwd с главни букви.
+
+s62625@astero:~$ cut -d ':' -f 5 /etc/passwd | cut -d ',' -f 1 | sed 's/[а-я]/\U&/g'
+
+--- 03-а-5000 ---
+Изведете реда от /etc/passwd, на който има информация за вашия потребител.
+
+s62625@astero:~$ grep $(whoami) /etc/passwd
+
+Изведедете този ред и двата реда преди него.
+
+s62625@astero:~$ grep -B 2 $(whoami) /etc/passwd
+
+Изведете този ред, двата преди него, и трите след него.
+
+s62625@astero:~$ grep -B 2 -A 3 $(whoami) /etc/passwd
+
+Изведете *само* реда, който се намира 2 реда преди реда, съдържащ информация за вашия потребител.
+
+s62625@astero:~$ grep -B 2 $(whoami) /etc/passwd | head -n 1
+
+
+--- 03-а-5001 ---
+Изведете колко потребители не изпозват /bin/bash за login shell според /etc/passwd
+
+(hint: 'man 5 passwd' за информация какъв е форматът на /etc/passwd)
+
+s62625@astero:~$ cut -d ':' -f 7 /etc/passwd | grep -v -c '/bin/bash'
+
+
+--- 03-а-5002 ---
+Изведете само имената на хората с второ име по-дълго от 6 (>6) символа според /etc/passwd
+
+s62625@astero:~$ cut -d ':' -f 5 /etc/passwd | cut -d ',' -f 1 | egrep '^[А-Я][а-я]+[[:space:]][А-Я][а-я]{6,}'
+
+
+--- 03-a-5003 ---
+Изведете имената на хората с второ име по-късо от 8 (<=7) символа според /etc/passwd // !(>7) = ?
+
+s62625@astero:~$ cut -d ':' -f 5 /etc/passwd | cut -d ',' -f 1 | egrep -v '^[А-Я][а-я]+[[:space:]][А-Я][а-я]{7,}'
+
+
+--- 03-a-5004 ---
+Изведете целите редове от /etc/passwd за хората от 03-a-5003
+
+egrep --color "^([^:]*:){4}[^\s]+\s+[^\s,:]{,7}[,:]" /etc/passwd
+
+
+--- 03-a-6000 ---
+Копирайте <РЕПО>/exercises/data/emp.data във вашата home директория.
+Посредством awk, използвайки копирания файл за входни данни, изведете:
+
+- общия брой редове
+
+s62625@astero:~$ awk 'END{print NR}' emp.data
+
+- третия ред
+
+s62625@astero:~$ awk 'FNR == 3' emp.data
+
+- последното поле от всеки ред
+
+s62625@astero:~$ awk '{print $NF}' emp.data
+
+- последното поле на последния ред
+
+s62625@astero:~$ awk 'END{print $NF}' emp.data
+
+- всеки ред, който има повече от 4 полета
+
+s62625@astero:~$ awk 'NF>4' emp.data
+
+- всеки ред, чието последно поле е по-голямо от 4
+
+s62625@astero:~$ awk '$NF>4' emp.data
+
+- общия брой полета във всички редове
+
+s62625@astero:~$ awk 'END{print NF*NR}' emp.data
+
+- броя редове, в които се среща низът Beth
+
+s62625@astero:~$ awk '/Beth/{print}' emp.data | awk 'END{print NR}'
+
+- най-голямото трето поле и редът, който го съдържа
+
+s62625@astero:~$ awk '{print $3, $0}' emp.data | sort -r | awk 'NR==1 { print $0 }'
+
+- всеки ред, който има поне едно поле
+
+s62625@astero:~$ awk 'NF>1' emp.data
+
+- всеки ред, който има повече от 17 знака
+
+s62625@astero:~$ awk 'length>17' emp.data
+
+- броя на полетата във всеки ред и самият ред
+
+s62625@astero:~$ awk '{print NF ":" $0}' emp.data
+
+- първите две полета от всеки ред, с разменени места
+
+s62625@astero:~$ awk '{print $2, $1}' emp.data
+
+- всеки ред така, че първите две полета да са с разменени места
+
+s62625@astero:~$ awk '{t=$1; $1=$2; $2=t; print}' emp.data
+
+- всеки ред така, че на мястото на първото поле да има номер на реда
+
+s62625@astero:~$ awk '{$1=FNR; print}' emp.data
+
+- всеки ред без второто поле
+
+s62625@astero:~$ awk '{printf $1FS$2; for (i=4; i<=NF; i++) printf FS$i; print NL}' emp.data
+
+- за всеки ред, сумата от второ и трето поле
+
+s62625@astero:~$ awk '{print $2+$3}' emp.data
+
+- сумата на второ и трето поле от всеки редq
+
+s62625@astero:~$ awk '{sum+=$2+$3;}END{print sum;}' emp.data
+
+
+--- 03-b-0300 ---
+Намерете само Group ID-то си от файлa /etc/passwd.
+
+s62625@astero:~$ grep "^$(whoami)" /etc/passwd | cut -d ':' -f 4
+
+
+--- 03-b-3400 ---
+Колко коментара има във файла /etc/services ? Коментарите се маркират със символа #, след който всеки символ на реда се счита за коментар.
+
+s62625@astero:~$ grep -c '#' /etc/services
+
+
+--- 03-b-3500 ---
+Колко файлове в /bin са 'shell script'-oве? (Колко файлове в дадена директория са ASCII text?)
+
+find ~ -type f | xargs grep "^#!" | wc -l
+
+
+--- 03-b-3600 ---
+Направете списък с директориите на вашата файлова система, до които нямате достъп. Понеже файловата система може да е много голяма, търсете до 3 нива на дълбочина.
+
+find / -maxdepth 3 -type d 2>&1 > /dev/null | cut -d ":" -f 2 | tr -d " ’‘"
+
+
+--- 03-b-4000 ---
+Създайте следната файлова йерархия в home директорията ви:
+dir5/file1
+dir5/file2
+dir5/file3
+
+s62625@astero:~$ mkdir dir5
+s62625@astero:~$ cd dir5
+s62625@astero:~/dir5$ touch file{1..3}
+
+Посредством vi въведете следното съдържание:
+file1:
+1
+2
+3
+
+s62625@astero:~/dir5$ vi file1
+
+file2:
+s
+a
+d
+f
+
+s62625@astero:~/dir5$ vi file2
+
+file3:
+3
+2
+1
+45
+42
+14
+1
+52
+
+s62625@astero:~/dir5$ vi file3
+
+Изведете на екрана:
+	* статистика за броя редове, думи и символи за всеки един файл
+
+	s62625@astero:~/dir5$ wc -l -w -m file1 file2 file3
+	s62625@astero:~/dir5$ find -type f | xargs wc -lwm
+
+	* статистика за броя редове и символи за всички файлове
+
+	s62625@astero:~/dir5$ wc -l -m file1 file2 file3 | tail -n 1
+	s62625@astero:~/dir5$ find -type f | xargs wc -lm | tail -n 1
+
+	* общия брой редове на трите файла
+	
+        s62625@astero:~/dir5$ wc -l file1 file2 file3 | tail -n 1
+	s62625@astero:~/dir5$ find -type f | xargs wc -l | tail -n 1 | cut -d " " -f 1
+
+
+--- 03-b-4001 ---
+Във file2 (inplace) подменете всички малки букви с главни.
+
+Отварям vi в нормален режим (чрез esc), маркирам симовла, който искам да направя голям, пиша команда gU, enter
+cat file2 | tr "a-z" "A-Z"
+
+
+--- 03-b-4002 ---
+Във file3 (inplace) изтрийте всички "1"-ци.
+
+vi + x
+s62625@astero:~/dir5$ cat file3 | sed -e 's/1//'
+
+
+--- 03-b-4003 ---
+Изведете статистика за най-често срещаните символи в трите файла.
+
+s62625@astero:~/dir5$ cat file{1..3} | sed 's/./&\n/' | sort | uniq -c
+
+
+--- 03-b-4004 ---
+Направете нов файл с име по ваш избор, чието съдържание е конкатенирани
+съдържанията на file{1,2,3}.
+
+s62625@astero:~/dir5$ cat file{1..3} > newfile.txt
+
+
+--- 03-b-4005 ---
+Прочетете текстов файл file1 и направете всички главни букви малки като
+запишете резултата във file2.
+
+s62625@astero:~/dir5$ cat file1 | sed 's/[A-Z]/\L&/g' > file2
+03-b-4005.txt: cat file1 | tr a-z A-Z >> file2
+
+
+--- 03-b-5200 ---
+Намерете броя на символите, различни от буквата 'а' във файла /etc/passwd
+
+s62625@astero:~/dir5$ cat /etc/passwd | tr -d 'a' | wc -m
+
+
+--- 03-b-5300 ---
+Намерете броя на уникалните символи, използвани в имената на потребителите от
+/etc/passwd.
+
+s62625@astero:~/dir5$ cat /etc/passwd | cut -d ":" -f 5 | cut -d "," -f 1 | sed 's/./\0\n/g' | sort | uniq | wc -l
+
+
+--- 03-b-5400 ---
+Отпечатайте всички редове на файла /etc/passwd, които не съдържат символния низ 'ов'.
+
+s62625@astero:~/dir5$ grep -v --color 'ов' /etc/passwd
+
+
+--- 03-b-6100 ---
+Отпечатайте последната цифра на UID на всички редове между 28-ми и 46-ред в /etc/passwd.
+
+s62625@astero:~/dir5$ head -n -46 /etc/passwd | tail -n 28 | cut -d ":" -f 3 | sed 's/.*\([0-9]\)/\1/'
+ 
+
+--- 03-b-6700 ---
+Отпечатайте правата (permissions) и имената на всички файлове, до които имате
+read достъп, намиращи се в директорията /tmp. (hint: 'man find', вижте -readable)
+
+s62625@astero:~$ find /tmp -type f -readable -printf "%m %p\n" 2> /dev/null
+
+--- 03-b-6900 ---
+Намерете имената на 10-те файла във вашата home директория, чието съдържание е
+редактирано най-скоро. На първо място трябва да бъде най-скоро редактираният
+файл. Намерете 10-те най-скоро достъпени файлове. (hint: Unix time)
+
+s62625@astero:~$ find ~ -type f -printf "%T@ %p\n" | sort -nr | head -n 10 | cut -d " " -f 2
+
+
+--- 03-b-7000 ---
+да приемем, че файловете, които съдържат C код, завършват на `.c` или `.h`.
+Колко на брой са те в директорията `/usr/include`?
+
+s62625@astero:~$ find /usr/include -type f  -name "*.[ch]" | wc -l
+
+Колко реда C код има в тези файлове?
+
+s62625@astero:~$ find /usr/include -type f  -name "*.[ch]" | xargs wc -l
+
+
+--- 03-b-7500 ---
+Даден ви е ASCII текстов файл - /etc/services. Отпечатайте хистограма на 10-те най-често срещани думи.
+Дума наричаме непразна последователност от букви. Не правим разлика между главни и малки букви.
+Хистограма наричаме поредица от редове, всеки от които има вида:
+<брой срещания> <какво се среща толкова пъти>
+
+s62625@astero:~$ egrep -o "\<[^ ]+\>" /etc/services | tr "\t" "\n" | sed "/^$/d" | sort | uniq -c | sort -rn | head -n 10
+
+
+--- 03-b-8000 ---
+Вземете факултетните номера на студентите (описани във файла
+<РЕПО>/exercises/data/mypasswd.txt) от СИ и ги запишете във файл si.txt сортирани.
+
+Студент е част от СИ, ако home директорията на този потребител (според
+<РЕПО>/exercises/data/mypasswd.txt) се намира в /home/SI директорията.
+
+s62625@astero:~$ cat /srv/fmi-os/exercises/data/mypasswd.txt | egrep "s[[:digit:]]{5,6}:/bin/[[:alpha:]]+$" | cut -f 1 -d ':' | egrep -o "[[:digit:]]+"
+
+
+--- 03-b-8500 ---
+За всяка група от /etc/group изпишете "Hello, <група>", като ако това е вашата група, напишете "Hello, <група> - I am here!".
+
+s62625@astero:~$  cut -d ':' -f 1 /etc/group | awk -v group=$(id -Gn $(whoami)) '{if($0 != group) print "Hello, "$0; else print "Hello, "$0" - it is me!"}'
+
+
+--- 03-b-8600 ---
+Shell Script-овете са файлове, които по конвенция имат разширение .sh. Всеки
+такъв файл започва с "#!<interpreter>" , където <interpreter> указва на
+операционната система какъв интерпретатор да пусне (пр: "#!/bin/bash",
+"#!/usr/bin/python3 -u").
+
+Намерете всички .sh файлове в директорията `/usr` и нейните поддиректории, и
+проверете кой е най-често използваният интерпретатор.
+
+--- 03-b-8700 ---
+1. Изведете GID-овете на 5-те най-големи групи спрямо броя потребители, за които
+съответната група е основна (primary).
+
+s62625@astero:~$ cut -d ':' -f 4 /etc/passwd | sort | uniq -c | sort -nr | head -n 5 | awk -F " " '{print $2}'
+
+
+2. (*) Изведете имената на съответните групи.
+
+Hint: /etc/passwd
+
+s62625@astero:~$ cut -d ':' -f 4 /etc/passwd | sort | uniq -c | sort -nr | head -n 5 | awk -F " " '{print $2}' | xargs -I @ egrep "([^:]*:){2}@:" /etc/group | cut -d ":" -f 1
+
+
+--- 03-b-9000 ---
+Направете файл eternity. Намерете всички файлове, намиращи се във вашата home
+директория и нейните поддиректории, които са били модифицирани в последните
+15мин (по възможност изключете .).  Запишете във eternity името (път) на
+файла и времето (unix time) на последната промяна.
+
+s62625@astero:~$ find ~ -type f -mmin -15 -printf '%p %t\n' 2> /dev/null > ./eternity
+
+
+--- 03-b-9050 ---
+Копирайте файл <РЕПО>/exercises/data/population.csv във вашата home директория.
+
+s62625@astero:~$ cp /srv/fmi-os/exercises/data/population.csv ~
+
+
+--- 03-b-9051 ---
+Използвайки файл population.csv, намерете колко е общото население на света
+през 2008 година. А през 2016?
+
+--- 03-b-9052 ---
+Използвайки файл population.csv, намерете коя държава има най-много население през 2016. А коя е с най-малко население?
+(Hint: Погледнете имената на държавите)
+
+s62625@astero:~$ egrep '2008,[0-9]*$' ./population.csv | rev | cut -d ',' -f 1 | rev | awk '{s+=$1} END {print s}'
+
+
+--- 03-b-9053 ---
+Използвайки файл population.csv, намерете коя държава има най-много население през 2016. А коя е с най-малко население?
+(Hint: Погледнете имената на държавите)
+
+s62625@astero:~$ egrep '2016,[0-9]*$' ./population.csv | sed "s/, /:/g" | sort -t ',' -k 4 -rn | head -n 1 | cut -d ',' -f 1 | sed "s/:/, /g"
+
+
+--- 03-b-9054 ---
+Използвайки файл population.csv, намерете коя държава е на 42-ро място по
+население през 1969. Колко е населението й през тази година?
+
+s62625@astero:~$ egrep '1969,[0-9]*$' ./population.csv | sed "s/, /:/g" | sort -t ',' -k 4 -rn | head -n 42 | tail -n 1 | sed "s/:/, /g" | cut -d ',' -f 1
+
+
+--- 03-b-9100 ---
+В home директорията си изпълнете командата
+curl -o songs.tar.gz "http://fangorn.uni-sofia.bg/misc/songs.tar.gz"
+
+
+--- 03-b-9101 ---
+Да се разархивира архивът songs.tar.gz в директория songs във вашата home директория.
+
+s62625@astero:~$ mkdir songs
+s62625@astero:~$ tar -xf songs.tar.gz -C ./songs
+
+
+
+--- 03-b-9102 ---
+Да се изведат само имената на песните.
+
+s62625@astero:~$ find -type f | egrep '.ogg$' | cut -d '-' -f 2 | rev | cut -d '(' -f 2 | rev| sed "s/^ *//g"
+
+
+--- 03-b-9103 ---
+Имената на песните да се направят с малки букви, да се заменят спейсовете с
+долни черти и да се сортират.
+
+s62625@astero:~$ find -type f | egrep '.ogg$' | cut -d '-' -f 2 | rev | cut -d '(' -f 2 | rev| sed "s/^ *//g" | sed "s/ *$//g" | tr [A-Z] [a-z] | tr ' ' '_' | sort
+
+
+--- 03-b-9104 ---
+Да се изведат всички албуми, сортирани по година.
+
+s62625@astero:~$ find -type f | egrep '.ogg$' | cut -d '-' -f 2 | sed "s/^ *//g" | cut -d '(' -f 2 | cut -d ')' -f 1 | sort -t ',' -k 2 -n
+
+
+--- 03-b-9105 ---
+Да се преброят/изведат само песните на Beatles и Pink.
+
+s62625@astero:~$ find -type f | egrep '.ogg$' | cut -d '-' -f 1 | cut -d '/' -f 3 | grep 'Pink Floyd\|Beatles' | sort | uniq -c
+
+
+s62625@astero:~$ find -type f | egrep '.ogg$' | grep 'Pink Floyd\|Beatles' | cut -d '-' -f 2 | sed "s/^ *//g" | cut -d '(' -f 1 | sed "s/ *$//g"
+
+
+--- 03-b-9106 ---
+Да се направят директории с имената на уникалните групи. За улеснение, имената
+от две думи да се напишат слято:
+
+Beatles, PinkFloyd, Madness
+
+s62625@astero:~$ mkdir $(find -type f | egrep '.ogg$' | cut -d '/' -f 3 | cut -d '-' -f 1 | sed "s/ //g" | sort | uniq)
+
+
+--- 03-b-9200 ---
+Напишете серия от команди, които извеждат детайли за файловете и директориите в
+текущата директория, които имат същите права за достъп както най-големият файл
+в /etc директорията.
+
+s62625@astero:~$ find . -perm $(find /etc -type f -printf "%p %m %s\n" 2> /dev/null | sort -rnk 3 | head -n 1 | cut -d " " -f 2) -printf "%p %m\n"
+
+
+--- 03-b-9300 ---
+Дадени са ви 2 списъка с email адреси - първият има 12 валидни адреса, а
+вторията има само невалидни. Филтрирайте всички адреси, така че да останат
+само валидните. Колко кратък регулярен израз можете да направите за целта?
+
+Валидни email адреси (12 на брой):
+email@example.com
+firstname.lastname@example.com
+email@subdomain.example.com
+email@123.123.123.123
+1234567890@example.com
+email@example-one.com
+_______@example.com
+email@example.name
+email@example.museum
+email@example.co.jp
+firstname-lastname@example.com
+unusually.long.long.name@example.com
+
+Невалидни email адреси:
+#@%^%#$@#$@#.com
+@example.com
+myemail
+Joe Smith <email@example.com>
+email.example.com
+email@example@example.com
+.email@example.com
+email.@example.com
+email..email@example.com
+email@-example.com
+email@example..com
+Abc..123@example.com
+(),:;<>[\]@example.com
+just"not"right@example.com
+this\ is"really"not\allowed@example.com
+
+--- 03-b-9400 ---
+Посредством awk, използвайки emp.data (от 03-a-6000.txt) за входнни данни,
+изведете:
+
+- всеки ред, като полетата са в обратен ред
+
+(Разгледайте for цикли в awk)
+
+--- 03-b-9500 ---
+Копирайте <РЕПО>/exercises/data/ssa-input.txt във вашата home директория.
+Общият вид на файла е:
+
+- заглавна част:
+	Smart Array P440ar in Slot 0 (Embedded)
+
+- една или повече секции за масиви:
+	Array A
+	Array B
+	...
+	като буквата (A, B, ...) е името на масива
+
+- във всяка таква секция има една или повече подсекции за дискове:
+	physicaldrive 2I:0:5
+	physicaldrive 2I:0:6
+	...
+
+	като 2I:0:5 е името на диска
+
+- във всяка подсекция за диск има множество параметри във вида:
+	key name: value
+	като за нас са интересни само:
+
+		Current Temperature (C): 35
+		Maximum Temperature (C): 36
+
+Напишете поредица от команди която обработва файл в този формат, и генерира
+следният изход:
+
+A-2I:0:5 35 36
+A-2I:0:6 34 35
+B-1I:1:1 35 50
+B-1I:1:2 35 49
+
+x-yyyyyy zz ww
+
+където:
+	- x е името на масива
+	- yyyyyy е името на диска
+	- zz е current temperature
+	- ww е max temperature

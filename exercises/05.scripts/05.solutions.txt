@@ -1,0 +1,974 @@
+05-a-2000.txt
+Сменете вашия prompt с нещо по желание. После върнете оригиналния обратно.
+sudo nano ~/.bashrc
+PS1="MyTestPrompt> "
+source ~/.bashrc
+
+https://phoenixnap.com/kb/change-bash-prompt-linux
+
+05-a-2100.txt
+Редактирайте вашия .bash_profile файл, за да ви поздравява (или да изпълнява някаква команда по ваш избор) всеки път, когато влезете в системата.
+
+s62625@astero:~$ touch ~/.bash_profile
+s62625@astero:~$ vim .bash_profile
+s62625@astero:~$ source ~/.bash_profile
+
+Във файла пиша 
+echo "My text"
+
+https://medium.com/@morkett89/customising-the-terminal-d3d307b0ec8d
+
+
+05-a-2200.txt
+Направете си ваш псевдоним (alias) на полезна команда.
+
+s62625@astero:~$ alias tarx="tar -xf"
+
+https://linuxize.com/post/how-to-create-bash-aliases/
+
+05-b-2000.txt
+Да се напише shell скрипт, който приканва потребителя да въведе низ (име) и изпечатва "Hello, низ".
+  
+  1 #! /bin.bash
+  2
+  3 read -p "Please enter your name: " name
+  4
+  5 echo "Hello, $name"
+
+05-b-2800.txt
+Да се напише shell скрипт, който приема точно един параметър и проверява дали подаденият му параметър се състои само от букви и цифри.
+
+  1 #! /bin/bash
+  2
+  3 if [ $# -ne 1 ]; then
+  4     echo "There must be exactly one parameter" >&2
+  5     exit 1
+  6 fi
+  7
+  8 if (echo "$1" | egrep -q  "^[[:alnum:]]*$"); then
+  9     echo "Yes"
+ 10 else
+ 11     echo "No"
+ 12 fi
+
+
+05-b-3100.txt
+Да се напише shell скрипт, който приканва потребителя да въведе низ - потребителско име на потребител от системата - след което извежда на стандартния изход колко активни сесии има потребителят в момента.
+
+  1 #! /bin/bash
+  2
+  3 read -p "Please, exter a valid username: " username
+  4
+  5 if [ -z "${username}" ]; then
+  6     echo "The parameter must have lenght > 0." >&2
+  7     exit 1
+  8 fi
+  9
+ 10 if (cut -d ':' -f 1 /etc/passwd | egrep -q "^"${username}"$"); then
+ 11     who | grep "^"${username}"" | wc -l
+ 12 else
+ 13     echo "Invalid username." >&2
+ 14     exit 2
+ 15 fi
+
+05-b-3200.txt
+Да се напише shell скрипт, който приканва потребителя да въведе пълното име на директория и извежда на стандартния изход подходящо съобщение за броя на всички файлове и всички директории в нея.
+
+  1 #! /bin/bash
+  2
+  3 read -p "Please, enter a dir name: " dirname
+  4
+  5 if [ ! -d "${dirname}" ]; then
+  6     echo "Invalid dir name." >&2
+  7     exit 1
+  8 fi
+  9
+ 10 echo "Number of files and dirs : $(find "${dirname}" -type f -or -type d 2>/dev/null | wc     -l)"
+
+
+05-b-3300.txt
+Да се напише shell скрипт, който чете от стандартния вход имената на 3 файла, обединява редовете на първите два (man paste), подрежда ги по азбучен ред и резултата записва в третия файл.
+
+  1 #! /bin/bash
+  2
+  3 read -p "Please, enter file names, separated by space: " file1 file2 file3
+  4
+  5 if [ ! \( -f "${file1}" -a -f "${file2}" \) ]; then
+  6     echo "The first and the second params are not files." >&2
+  7     exit 1
+  8 fi
+  9
+ 10 paste "${file1}" "${file2}" > "${file3}"
+
+
+05-b-3400.txt
+Да се напише shell скрипт, който чете от стандартния вход име на файл и символен низ, проверява дали низа се съдържа във файла и извежда на стандартния изход кода на завършване на командата с която сте проверили наличието на низа.
+
+NB! Символният низ може да съдържа интервал (' ') в себе си.
+
+
+  1 #! /bin/bash
+  2
+  3 read -p "Please enter filename: " file
+  4 if [ ! -f "${file}" ]; then
+  5     echo "The given filename is invalid" >&2
+  6     exit 1
+  7 fi
+  8
+  9 IFS="\n"
+ 10 read -p "Please, enter string: " string
+ 11 if [ -z "${string}" ]; then
+ 12     echo "The given string is empty." >&2
+ 13     exit 2
+ 14 fi
+ 15
+ 16 grep -F -q "${string}" "${file}"
+ 17 echo $?
+
+
+05-b-4200.txt
+Имате компилируем (a.k.a няма синтактични грешки) source file на езика C. Напишете shell script, който да покaзва колко е дълбоко най-дълбокото nest-ване (влагане).
+Примерен .c файл:
+
+#include <stdio.h>
+
+int main(int argc, char *argv[]) {
+
+  if (argc == 1) {
+		printf("There is only 1 argument");
+	} else {
+		printf("There are more than 1 arguments");
+	}
+
+	return 0;
+}
+Тук влагането е 2, понеже имаме main блок, а вътре в него if блок.
+
+Примерно извикване на скрипта:
+
+./count_nesting sum_c_code.c
+
+Изход:
+The deepest nesting is 2 levels
+
+
+  1 #! /bin/bash
+  2
+  3 if [ $# -ne 1 ]; then
+  4     echo "There must be eactly one argument." >&2
+  5     exit 1
+  6 fi
+  7
+  8 if [ ! -f "$1" ]; then
+  9     echo "the given parameter is not a file. " >&2
+ 10     exit 2
+ 11 fi
+ 12
+ 13 current=0
+ 14
+ 15 IFS=" "
+ 16 while read -n 1 symbol; do
+ 17     if [ "${symbol}" = "{" ]; then
+ 18         current=$((${current} + 1))
+ 19     fi
+ 20 done < "$1"
+ 21
+ 22 echo "The deepest nesting level is ${current} levels"
+
+05-b-4300.txt
+Напишете shell script, който по подаден като аргумент файл с map между <nickname> -> <реален username> и nickname, ще ви улесни да изпращате съобщения на хората.
+
+  1 #! /bin/bash
+  2
+  3 if [ $# -ne 2 ]; then
+  4     echo "There must be exactly two parameter." >&2
+  5     exit 1
+  6 fi
+  7
+  8 if [ ! -f "$1" ]; then
+  9     echo "The given file does not exits." >&2
+ 10     exit 2
+ 11 fi
+ 12
+ 13 if [ "$(egrep "^"$2 "" "$1") | wc -l" -ne 1 ]; then
+ 14     echo"The user name must exists exactly once in the file." >&2
+ 15     exit 3
+ 16 fi
+ 17
+ 18 write "$(egrep "^"$2 "" "$1" | egrep -o "[^ ]+$")"
+
+
+05-b-4301.txt
+Напишете shell script, който автоматично да попълва файла указател от предната задача по подадени аргументи: име на файла указател, пълно име на човека (това, което очакваме да е в /etc/passwd) и избран за него nickname.
+Файлът указател нека да е във формат:
+<nickname, който лесно да запомните> <username в os-server>
+// може да сложите и друг delimiter вместо интервал
+
+Примерно извикване:
+./pupulate_address_book myAddressBook "Ben Dover" uncleBen
+
+Добавя към myAddressBook entry-то:
+uncleBen <username на Ben Dover в os-server>
+
+***Бонус: Ако има няколко съвпадения за въведеното име (напр. има 10 човека Ivan Petrov в /etc/passwd), всички те да се показват на потребителя, заедно с пореден номер >=1,
+след което той да може да въведе някой от номерата (или 0 ако не си хареса никого), и само избраният да бъде добавен към указателя.
+
+  1 #! /bin/bash
+  2
+  3 if [ $# -ne 3 ]; then
+  4    echo "There must be exactly three parameters." >&2
+  5    exit 1
+  6 fi
+  7
+  8 if [ ! -f "$1" ]; then
+  9     if ! touch "$1"; then
+ 10         echo "There was na error creating the file." >&2
+ 11 fi
+ 12
+ 13 echo "There have been found:"
+ 14 awk -F ":" -v user="^$2" 'BEGIN { i = 0 } { ++i; if($5 ~ user)  i,$1,$5}' /etc/passwd
+ 15
+ 16 read -p "Your choice: " answer
+ 17 head -n "${answer}" /etc/passwd" | tail -n 1 | awk -F ":" -v user="$3" '{ print user,$1 }    ' > "$1"
+
+
+05-b-4400.txt
+Напишете shell script, който да приема параметър име на директория, от която взимаме файлове, и опционално експлицитно име на директория, в която ще копираме файлове. Скриптът да копира файловете със съдържание, променено преди по-малко от 45 мин, от първата директория във втората директория. Ако втората директория не е подадена по име, нека да получи такова от днешната дата във формат, който ви е удобен. При желание новосъздадената директория да се архивира.
+
+  1 #! /bin/bash
+  2
+  3 check() {
+  4     if [ ! -d "$1" ]; then
+  5         echo "The first argument has to be a directory." >&2
+  6         exit 4
+  7     fi
+  8 }
+  9
+ 10 if [ $# -eq 1 ]; then
+ 11     check "$1"
+ 12     date="$(date '+%F')"
+ 13
+ 14     if ! mkdir "$date";then
+ 15         "There was a problem creating  DIRECTORY." >&2
+ 16         exit 2
+ 17     fi
+ 18
+ 19     find "$1" -type f -mmin -45 -exec cp {} "$date" \;
+ 20     tar -cJf ""${date}".tar.xz" "${date}"
+ 21
+ 22     if ! rm -rf "${date}"; then
+ 23         echo "There was a problem deleting the date dir." >&2
+ 24         exit 3
+ 25     fi
+ 26 elif [ $# -eq 2 ]; then
+ 27     check "$1"
+ 28     if [ ! -d "#2" ];then
+ 29         echo "The second parameter should be directory." >&2
+ 30         exit 3
+ 31     fi
+ 32
+ 33     find "$1" -type f -mmin -45 -exec cp {} "$2" \;
+ 34     tar cJf "$(basename "$2").tar.xz" "$2"
+ 35 else
+ 36     echo "There has to be one or two arguments." >&2
+ 37     exit 1
+ 38 fi
+
+05-b-4500.txt
+Да се напише shell скрипт, който получава при стартиране като параметър в командния ред идентификатор на потребител. Скриптът периодично (sleep(1)) да проверява дали потребителят е log-нат, и ако да - да прекратява изпълнението си, извеждайки на стандартния изход подходящо съобщение.
+
+NB! Можете да тествате по същият начин като в 05-b-4300.txt
+
+  1 #! /bin/bash
+  2
+  3 if [ $# -ne 1 ]; then
+  4     echo "There must be exactly one argument." > $2
+  5     exit 1
+  6 fi
+  7
+  8 while [ "$(who | egrep "^$1" | wc -l)" -lt 1 ]; do
+  9     echo "The selecte user has not logged in."
+ 10     sleep 3
+ 11 done
+ 12
+ 13 echo "The selected user is online"
+
+
+
+05-b-4600.txt
+Да се напише shell скрипт, който валидира дали дадено цяло число попада в целочислен интервал.
+Скриптът приема 3 аргумента: числото, което трябва да се провери; лява граница на интервала; дясна граница на интервала.
+Скриптът да връща exit status:
+- 3, когато поне един от трите аргумента не е цяло число
+- 2, когато границите на интервала са обърнати
+- 1, когато числото не попада в интервала
+- 0, когато числото попада в интервала
+
+Примери:
+$ ./validint.sh -42 0 102; echo $?
+1
+
+$ ./validint.sh 88 94 280; echo $?
+1
+
+$ ./validint.sh 32 42 0; echo $?
+2
+
+$ ./validint.sh asdf - 280; echo $?
+3
+
+#! /bin/bash
+
+if [ $# -ne 3 ]; then
+    echo "There must be exactly three parameters." >&2
+    exit 4
+fi
+
+if [[ ! ("$1" =~ ^-?[0-9]+$ && "$2" =~ ^-?[0-9]+$ && "$3" =~ ^-?[0-9]+) ]]; then
+    echo "The parameters should be integers."
+    exit 3
+fi
+
+if [ "$2" -gt "$3" ]; then
+    echo "The boundries are reversed."
+    exit 2
+fi
+
+if [ "$1" -lt "$2" -o "$1" -gt "$3" ]; then
+    echo "The number is out of the boundies."
+    exit 1
+fi
+
+echo "The number is in the boundries."
+
+
+05-b-4700.txt
+Да се напише shell скрипт, който форматира големи числа, за да са по-лесни за четене.
+Като пръв аргумент на скрипта се подава цяло число.
+Като втори незадължителен аргумент се подава разделител. По подразбиране цифрите се разделят с празен интервал.
+
+Примери:
+$ ./nicenumber.sh 1889734853
+1 889 734 853
+
+$ ./nicenumber.sh 7632223 ,
+7,632,223
+
+  1 #! /bin/bash
+  2
+  3 if [ $# -lt 1 -o $# -gt 2 ]; then
+  4     echo "There must be at one or two arguments." >2&
+  5     exit 1
+  6 fi
+  7
+  8 if [[ ! "$1" =~ ^[0-9]+$ ]]; then
+  9     echo "The given parameter is not a numver." >&2
+ 10     exit 2
+ 11 fi
+ 12
+ 13 delimeter=" "
+ 14 if [ $# -eq 2 ]; then
+ 15     delimeter="$2"
+ 16 fi
+ 17
+ 18 sed -E "s/([0-9]{3})/\1"${delimeter}"/g" <<< $(rev <<< $1) | rev | sed "s/^ //g"
+
+
+05-b-4800.txt
+Да се напише shell скрипт, който приема файл и директория. Скриптът проверява в подадената директория и нейните под-директории дали съществува копие на подадения файл и отпечатва имената на намерените копия, ако съществуват такива.
+
+NB! Под 'копие' разбираме файл със същото съдържание.
+
+
+  1 #! /bin/bash
+  2
+  3 if [ $# -ne 2 ]; then
+  4     echo "There must be exactly two parameters." >&2
+  5     exit 1
+  6 fi
+  7
+  8 if [ ! -f "$1" ]; then
+  9     echo "The first argument is not an existing file." >&2
+ 10     exit 2
+ 11 fi
+ 12
+ 13 if [ ! -d "$2" ]; then
+ 14     echo "The second argument is not an existing directory." >&2
+ 15     exit 2
+ 16 fi
+ 17
+ 18 find "$2" -type f | while read filename; do
+ 19     if cmp "$filename" "$1"; then
+ 20         echo "$filename"
+ 21     fi
+ 22 done
+
+
+05-b-5500.txt
+Да се напише shell script, който генерира HTML таблица съдържаща описание на
+потребителите във виртуалката ви. Таблицата трябва да има:
+- заглавен ред с имената нa колоните
+- колони за username, group, login shell, GECOS field (https://en.wikipedia.org/wiki/Gecos_field)
+
+Пример:
+$ ./passwd-to-html.sh > table.html
+$ cat table.html
+<table>
+  <tr>
+    <th>Username</th>
+    <th>group</th>
+    <th>login shell</th>
+    <th>GECOS</th>
+  </tr>
+  <tr>
+    <td>root</td>
+    <td>root</td>
+    <td>/bin/bash</td>
+    <td>GECOS here</td>
+  </tr>
+  <tr>
+    <td>ubuntu</td>
+    <td>ubuntu</td>
+    <td>/bin/dash</td>
+    <td>GECOS 2</td>
+  </tr>
+</table>
+
+#! /bin/bash
+
+echo "<table>
+    <tr>
+        <th>Username</th>
+        <th>group</th>
+        <th>login shell</th>
+        <th>GECKO</th>
+    </tr>"
+
+while read line; do
+    awk -F ":" '{
+        print "    <tr>";
+        print "        <td>"$1"</td>";
+        print "        <td>"$4"</td>";
+        print "        <td>"$7"</td>";
+        print "        <td>"$5"</td>";
+        print "    </tr>";
+    }' <<< "$line"
+done < /etc/passwd
+
+echo "</table>"
+
+05-b-6600.txt
+Да се напише shell скрипт, който получава единствен аргумент директория и изтрива всички повтарящи се (по съдържание) файлове в дадената директория. Когато има няколко еднакви файла, да се остави само този, чието име е лексикографски преди имената на останалите дублирани файлове.
+
+Примери:
+$ ls .
+f1 f2 f3 asdf asdf2
+# asdf и asdf2 са еднакви по съдържание, но f1, f2, f3 са уникални
+
+$ ./rmdup .
+$ ls .
+f1 f2 f3 asdf
+# asdf2 е изтрит
+
+#! /bin/bash 
+
+if [ $# -ne 1 ]; then
+    echo "There must be exactly one parameter." >&2
+    exit 1
+fi
+
+if [ ! -d "$1" ]; then
+    echo "The given parameter must be a directory." >&2
+    exit 2
+fi
+
+files="$(find "$1" -type f)"
+while read file1; do
+    while read file2; do
+        if [ -f "$file1" -a -f "$file2" -a ! "$file1" = "$file2" ]; then
+            if cmp -s "$file1" "$file2"; then
+                to_remove="$(echo -e "$file1\n$file2" | sort | tail -n 1)"
+                if ! rm "$to_remove"; then
+                    echo "There was a problem removing a file." >&2
+                    exit 3
+                fi
+            fi
+        fi
+    done <<< "$files"
+done <<< "$files"
+
+
+05-b-6800.txt
+Да се напише shell скрипт, който получава единствен аргумент директория и отпечатва списък с всички файлове и директории в нея (без скритите).
+До името на всеки файл да седи размера му в байтове, а до името на всяка директория да седи броят на елементите в нея (общ брой на файловете и директориите, без скритите).
+
+a) Добавете параметър -a, който указва на скрипта да проверява и скритите файлове и директории.
+
+Пример:
+$ ./list.sh .
+asdf.txt (250 bytes)
+Documents (15 entries)
+empty (0 entries)
+junk (1 entry)
+karh-pishtov.txt (8995979 bytes)
+scripts (10 entries)
+
+
+  1 #! /bin/bash
+  2
+  3 if [ $# -ne 1 -a $# -ne 2 ]; then
+  4     echo "There must be exactly one/two parameter(s)." >&2
+  5     exit 1
+  6 fi
+  7
+  8 if [ "$1" = "-a" ]; then
+  9     showAll-true
+ 10     shift
+ 11 fi
+ 12
+ 13 if [ ! -d "$1" ]; then
+ 14     echo "The given parameter is not a directory." >&2
+ 15     exit 2
+ 16 fi
+ 17
+ 18 find "$1" -maxdepth 1 | while read line; do
+ 19     if [[ "$showAll" == "true" || ( ! "$(basename "$line")" =~ ^\.  ) ]]; then
+ 20         if [ -f "$line" ]; then
+ 21             echo "$line ($(stat "$line" --printf "%s") bytes)"
+ 22         elif [ -d "$line" ]; then
+ 23             echo "$line ($(find "$line" | wc -l) entries)"
+ 24         else
+ 25             echo "$line"
+ 26         fi
+ 27     fi
+ 28 done
+
+
+05-b-7000.txt
+Да се напише shell скрипт, който приема произволен брой аргументи - имена на файлове. Скриптът да прочита от стандартния вход символен низ и за всеки от зададените файлове извежда по подходящ начин на стандартния изход броя на редовете, които съдържат низа.
+
+NB! Низът може да съдържа интервал.
+
+
+  1 #! /bin/bash
+  2
+  3 if [ $# -eq 0 ]; then
+  4     echo "There must  be more than 0 arguments." >&2
+  5     exit 1
+  6 fi
+  7
+  8 IFS="\n"
+  9 read -p "Enter string: " string
+ 10
+ 11 while [ $# -gt 0 ]; do
+ 12     if [ -f "$1" ]; then
+ 13         echo "$1    nummber of matches; $(grep -F "$string" "$1" | wc -l)"
+ 14     else
+ 15         echo "A given parameter is not a file." >&2
+ 16         exit 2
+ 17     fi
+ 18
+ 19     shift
+ 20 done
+
+
+05-b-7100.txt
+Да се напише shell скрипт, който приема два параметъра - име на директория и число. Скриптът да извежда на стандартния изход имената на всички обикновени файлове във директорията, които имат размер, по-голям от подаденото число.
+
+  1 #! /bin/bash
+  2
+  3 if [ $# -ne 2 ]; then
+  4     echo "There must be exactly two arguments." >&2
+  5     exit 1
+  6 fi
+  7
+  8 if [ ! -d "$1" ]; then
+  9     echo "The fist argument must be a directory." >&2
+ 10     exit 2
+ 11 fi
+ 12
+ 13 if [[ ! "$2" =~ ^[0-9]+$ ]]; then
+ 14     echo "The second parameter ust be a number." >&2
+ 15     exit 3
+ 16 fi
+ 17
+ 18 find "$1" -type f -printf "%s %p\n" | awk -F " " -v size="$2" '$1 > size {print $2}'
+
+
+05-b-7200.txt
+Да се напише shell скрипт, който приема произволен брой аргументи - имена на файлове или директории. Скриптът да извежда за всеки аргумент подходящо съобщение:
+	- дали е файл, който може да прочетем
+	- ако е директория - имената на файловете в нея, които имат размер, по-малък от броя на файловете в директорията.
+
+#! /bin/bash 
+
+while [ $# -gt 0 ]; do
+    if [ -f "$1" ]; then
+        echo "$1    file"
+    elif [ -d "$1" ]; then
+        echo "$1    directory:"
+        entries="$(find "$1" -type f | wc -l)"
+        find "$1" -type f -printf "%s %p\n" | awk -F " " -v ent="$entries" '$1 < ent { print "    ",$2 }'
+    else
+        echo "$1 is not nighter file, nor directory." >&2
+    fi
+    
+    shift
+done
+
+
+05-b-7500.txt
+Напишете shell script guess, която си намисля число, което вие трябва да познате. В зависимост от вашия отговор, програмата трябва да ви казва "надолу" или "нагоре", докато не познате числото. Когато го познаете, програмата да ви казва с колко опита сте успели.
+
+./guess (програмата си намисля 5)
+
+Guess? 22
+...smaller!
+Guess? 1
+...bigger!
+Guess? 4
+...bigger!
+Guess? 6
+...smaller!
+Guess? 5
+RIGHT! Guessed 5 in 5 tries!
+
+Hint: Един начин да направите рандъм число е с $(( (RANDOM % b) + a  )), което ще генерира число в интервала [a, b]. Може да вземете a и b като параметри, но не забравяйте да направите проверката.
+
+#! /bin/bash
+
+number="$(((RANDOM % 100) + 1))"
+echo "Welcome to the guesing game. You have to guess a number between 1 and 100."
+
+counter=0
+
+first="true"
+entry=0
+while [ "$first" = "true" -o "$entry" -ne "$number" ]; do
+    first="false"
+    read -p "Your choice: " entry
+
+    if [[ ! "$entry" =~ ^[0-9]+$ ]]; then
+        echo "Your guess was not a number."
+        continue
+    elif [ "$entry" -lt 1 -o "$entry" -gt 100 ]; then
+        echo "Your guess is out of the interval."
+        continue
+    elif [ "$entry" -lt "$number" ]; then
+        echo "Your guess was less then the secret number."
+    elif [ "$entry" -gt "$number" ]; then
+        echo "Your guess was greater than the secret number."
+    fi
+
+    counter=$((counter + 1))
+done
+
+echo "You successeded in "$counter" tries."
+05-b-7550.txt
+Да се напише shell скрипт, който приема параметър - име на потребител. Скриптът да прекратява изпълненито на всички текущо работещи процеси на дадения потребител, и да извежда колко са били те.
+
+NB! Може да тествате по същият начин като описаният в 05-b-4300
+
+#! /bin/bash
+
+if [ $# -ne 1 ]; then
+    echo "There must be exactly one parameter." >&2
+    exit 1
+fi
+
+if ! egrep -q "^$1:" /etc/passwd; then
+    echo "There is no such user." >&2
+    exit 2
+fi
+
+number="$(ps -u "$1" -o pid --no-headers | wc -l)"
+if ! killall -u "$1"; then
+    echo "There was a problem killing the processes of $1"
+fi
+echo "$number processes were killed."
+
+
+05-b-7700.txt
+Да се напише shell скрипт, който приема два параметъра - име на директория и число. Скриптът да извежда сумата от размерите на файловете в директорията, които имат размер, по-голям от подаденото число.
+
+#! /bin/bash
+
+if [ $# -ne 2 ]; then
+    echo "There must be exactly two parameters." >&2
+    exit 1
+fi
+
+if [ ! -d "$1" ]; then
+    echo "The first parameter must be a directory." >&2
+    exit 2
+fi
+
+if ! egrep -q "^[0-9]+\.?[0-9]*$" <<< $2; then
+    echo "The second parameter is not a number." >&2
+    exit 3
+fi
+
+find "$1" -type f -printf "%s %p\n" | awk -F " " -v size="$2" '$1 > size { print $2 }'
+
+
+
+05-b-7800.txt
+Да се напише shell скрипт, който намира броя на изпълнимите файлове в PATH.
+Hint: Предполага се, че няма спейсове в имената на директориите
+Hint2: Ако все пак искаме да се справим с този случай, да се разгледа IFS променливата и констуркцията while read -d
+
+sed "s/:/\n/g" <<< "$PATH" | xargs -I {} find "{}" -type f -executable | wc -l
+
+05-b-8000.txt
+Напишете shell script, който получава като единствен аргумент име на потребител и за всеки негов процес изписва съобщение за съотношението на RSS към VSZ. Съобщенията да са сортирани, като процесите с най-много заета виртуална памет са най-отгоре.
+
+Hint:
+Понеже в Bash няма аритметика с плаваща запетая, за смятането на съотношението използвайте командата bc. За да сметнем нампример 24/7, можем да: echo "scale=2; 24/7" | bc
+Резултатът е 3.42 и има 2 знака след десетичната точка, защото scale=2.
+Алтернативно, при липса на bc ползвайте awk.
+
+  1 #! /bin/bash
+  2
+  3 if [ $# -ne 1 ]; then
+  4     echo "There must be exactly one argument." >&2
+  5     exit 1
+  6 fi
+  7
+  8 bc <<< $(ps -u "$1" -o rss,vsz --sort=-vsz --no-headers | tr -s ' ' | cut -d     ' ' -f  2,3 | sed 's! !/!g' | xargs -I @ echo "scale=2; @")
+
+
+05-b-9100.txt
+Опишете поредица от команди или напишете shell скрипт, които/който при известни две директории SOURCE и DESTINATION:
+- намира уникалните "разширения" на всички файлове, намиращи се някъде под SOURCE. (За простота приемаме, че в имената на файловете може да се среща символът точка '.' максимум веднъж.)
+- за всяко "разширение" създава по една поддиректория на DESTINATION със същото име
+- разпределя спрямо "разширението" всички файлове от SOURCE в съответните поддиректории в DESTINATION
+
+#! /bin/bash -x 
+
+if [ $# -ne 2 ]; then
+    echo "The number of arguments must be exactly 2." >&2
+    exit 1
+fi
+
+if [ ! -d "$1" -o ! -d "$2" ]; then
+    echo "The two parameters must be directories." >&2
+    exit 2
+fi
+
+SOURCE="$1"
+DEST="$2"
+
+find "$SOURCE" -type f | awk -F "." '{ if(NF == 1) print "missing extension"; else print $NF }' | sort | uniq | xargs -I {} mkdir "$DEST/{}"
+
+find "$SOURCE" -type f | while read line; do
+    extension="$(awk -F "." '{ if(NF == 1) print "missing extension"; else print $NF }' <<< "$line")"
+    mv "$line" "$DEST/$extension/$(basename $line)"
+done
+
+  1 #! /bin/bash
+  2
+  3 if [ $# -ne 2 ]; then
+  4     echo "There must be exactly 2 arguments." >&2
+  5     exit 1
+  6 fi
+  7
+  8 if [ ! -d "$1" -o ! -d "$2" ]; then
+  9     echo "The arguments must be directories." > &2
+ 10     exit 2
+ 11 fi
+ 12
+ 13 while read line; do
+ 14	#Създаване на папките
+ 15 done <<< find ./ -type f | rev | cut -d '/' -f 1 | rev | cut -d '.' -f 2 | sort | uniq
+ 16
+
+05-b-9200.txt
+Да се напише shell скрипт, който получава произволен брой аргументи файлове, които изтрива.
+Ако бъде подадена празна директория, тя бива изтрита. Ако подадения файл е директория с поне 1 файл, тя не се изтрива.
+За всеки изтрит файл (директория) скриптът добавя ред във log файл с подходящо съобщение.
+
+а) Името на log файла да се чете от shell environment променлива, която сте конфигурирали във вашия .bashrc.
+б) Добавете параметър -r на скрипта, който позволява да се изтриват непразни директории рекурсивно.
+в) Добавете timestamp на log съобщенията във формата: 2018-05-01 22:51:36
+
+Примери:
+$ export RMLOG_FILE=~/logs/remove.log
+$ ./rmlog -r f1 f2 f3 mydir/ emptydir/
+$ cat $RMLOG_FILE
+[2018-04-01 13:12:00] Removed file f1
+[2018-04-01 13:12:00] Removed file f2
+[2018-04-01 13:12:00] Removed file f3
+[2018-04-01 13:12:00] Removed directory recursively mydir/
+[2018-04-01 13:12:00] Removed directory emptydir/
+
+#! /bin/bash
+
+if [ $# -ge 1 -a "$1" = "-r" ]; then
+    recursive=true
+    shift
+fi
+
+while [ $# -gt 0 ]; do
+    if [ -f "$1" ]; then
+        if ! rm "$1"; then
+            echo "There was a problem deleting a $1." >&2
+            exit 1
+        fi
+        echo "[$(date '+%F %T')] Removed file: $1" >> "$RMLOG_FILE"
+    elif [ -d "$1" ]; then
+        number_of_files="$(find "$1" -type f | wc -l)"
+        if [ "$number_of_files" -eq 0 ]; then
+            if ! rm -r "$1"; then
+               echo "There was a problem removing $1" >&2
+               exit 3
+            fi
+            echo "[$(date '+%F %T')] Removed directory with no files: $1" >> "$RMLOG_FILE"
+        else
+            if [ "$recursive" ]; then
+                if ! rm -r "$1"; then
+                    "There was a problem deleting recursicely $1.">&2
+                    exit 2
+                fi
+                echo "[$(date '+%F %T')] Removed directory recursively: $1" >> "$RMLOG_FILE"
+            fi
+        fi
+    fi
+
+    shift
+done
+
+
+05-b-9500.txt
+(Цветно принтиране) Напишете shell script color_print, който взима два параметъра.
+
+Първият може да е измежду "-r", "-g" "-b", а вторият е произволен string.
+На командата "echo" може да се подаде код на цвят, който ще оцвети текста в определения цвят.
+В зависимост от първия аргумент, изпринтете втория аргумен в определения цвят:
+
+"-r" е червено. Кодът на червеното е '\033[0;31m' (echo -e "\033[0;31m This is red")
+"-g" е зелено. Кодът на зеленото е '\033[0;32m' (echo -e "\033[0;32m This is green")
+"-b" е синьо. Кодът на синьото е '\033[0;34m' (echo -e "\033[0;34m This is blue")
+Ако е подадена друга буква изпишете "Unknown colour", а ако изобщо не е подаден аргумент за цвят, просто изпишете текста.
+
+Hint:
+
+В края на скрипта си напишете:
+echo '\033[0m'
+,за да не се прецакат цветовете на терминала. Това е цветът на "няма цвят".
+
+
+#! /bin/bash 
+
+if [ $# -ne 1 -a $# -ne 2 ]; then
+    echo "There can be one or two parameters." >&2
+    exit 1
+fi
+
+if [ "$1" = "-r" ]; then
+    echo -ne "\033[0;31m"
+elif [ "$1" = "-g" ]; then
+    echo -ne "\033[0;32m"
+elif [ "$1" = "-b" ]; then
+    echo -ne "\033[0;34m"
+else
+    echo "Unkown color." >&2
+    exit 1
+fi
+
+echo -n "$2"
+echo -e "\033[0m"
+
+05-b-9501.txt
+Този път програмата ви ще приема само един параметър, който е измежду ("-r", "-b", "-g", "-x").
+Напишете shell script, който приема редовете от stdin и ги изпринтва всеки ред с редуващ се цвят. Цветовете вървят RED-GREEN-BLUE и цветът на първия ред се определя от аргумента.
+ Ако е подаден аргумент "-x", то не трябва да променяте цветовете в терминала (т.е., все едно сте извикали командата cat).
+
+Hint: Не забравяйте да връщате цветовете в терминала.
+
+05-b-9600.txt
+Да се напише shell скрипт, който получава произволен брой аргументи файлове, които изтрива.
+Ако бъде подадена празна директория, тя бива изтрита. Ако подадения файл е директория с поне 1 файл, тя не се изтрива.
+
+Да се дефинира променлива BACKUP_DIR (или друго име), в която:
+- изтритите файлове се компресират и запазват
+- изтритите директории се архивират, комприсират и запазват
+- имената на файловете е "filename_yyyy-mm-dd-HH-MM-SS.{gz,tgz}", където filename е оригиналното име на файла (директорията) преди да бъде изтрит
+
+а) Добавете параметър -r на скрипта, който позволява да се изтриват непразни директории рекурсивно и съответно да се запазят в BACKUP_DIR
+
+Примери:
+$ export BACKUP_DIR=~/.backup/
+
+# full-dir/ има файлове и не може да бъде изтрита без параметър -r
+$ ./trash f1 f2 full-dir/ empty-dir/
+error: full-dir/ is not empty, will not detele
+$ ls $BACKUP_DIR
+f1_2018-05-07-18-04-36.gz
+f2_2018-05-07-18-04-36.gz
+empty-dir_2018-05-07-18-04-36.tgz
+
+$ ./trash -r full-dir/
+
+$ ls $BACKUP_DIR
+f1_2018-05-07-18-04-36.gz
+f2_2018-05-07-18-04-36.gz
+full-dir_2018-05-07-18-04-50.tgz
+empty-dir_2018-05-07-18-04-36.tgz
+
+# можем да имаме няколко изтрити файла, които се казват по един и същ начин
+$ ./trash somedir/f1
+
+$ ls $BACKUP_DIR
+f1_2018-05-07-18-04-36.gz
+f1_2018-05-07-18-06-01.gz
+f2_2018-05-07-18-04-36.gz
+full-dir_2018-05-07-18-04-50.tgz
+empty-dir_2018-05-07-18-04-36.tgz
+
+05-b-9601.txt
+Да се напише shell скрипт, който възстановява изтрити файлове, които имат запазено копие в BACKUP_DIR (от предната задача).
+При възстановяването файловете да се декомпресират, а директориите да се декомпресират и разархивират.
+
+а) Да се дефинира параметър -l, който изрежда всички файлове, които могат да бъдат възстановени и датата на тяхното изтриване.
+
+б) Скриптът да приема 2 параметъра. Първият е името на файла, който да се възстанови, а вторията е директорията, в която файлът да бъде възстановен. Ако вторият аргумент липсва, файлът да се възстановява в сегашната директория, където скриптът се изпълнява.
+
+в) Когато има N > 1 запазени файла със същото име, да се изпише списък с N реда на потребителя и да се изиска той да въведе цяло число от 1 до N, за да избере кой файл да възстанови.
+
+Примери:
+# BACKUP_DIR трябва да е дефинирана преди използването на скрипта
+$ echo $BACKUP_DIR
+~/.backup
+
+$ ./restore.sh -l
+f1  (2018/05/07 18:04:36)
+f1  (2018/05/07 18:06:01)
+f2  (2018/05/07 18:04:36)
+full-dir    (2018/05/07 18:04:50)
+empty-dir   (2018/05/07 18:04:36)
+
+$ ls restored-dir/
+# възстановяване на файл в подадена директория
+$ ./restore.sh f2 target-dir/
+$ ls restored-dir/
+f2
+
+# възстановяване на дублиран файл в сегашната директория
+$ ./restore.sh f1
+(1) f1  (2018/05/07 18:04:36)
+(2) f1  (2018/05/07 18:06:01)
+choose file (1, 2):
+# потребителят въвежда 2
+
+$ ls
+f1
+
+$ ./restore.sh -l
+f1  (2018/05/07 18:04:36)
+full-dir    (2018/05/07 18:04:50)
+empty-dir   (2018/05/07 18:04:36)
+
+# възстановяване на директория в сегашната директория
+$ ./restore.sh full-dir
+$ ls
+f1  full-dir/

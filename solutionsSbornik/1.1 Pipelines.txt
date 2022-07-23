@@ -1,0 +1,37 @@
+zad_1
+awk -e 'BEGIN { n= 0} /[24680]/ && $0 !~ /[a-w]/ { n++ }; END { printf("Броят на търсените редове е %d\n", n) }' philip-j-fry.txt
+
+zad_2
+find / -user $(whoami) 2> /dev/null | wc -l
+
+zad_3
+find -type f -size 0c | rm -i
+
+find ~ -type f -printf '%p %s\n' | sort -rn -k 2 | head -n 5
+
+zad_4
+awk -F ':' ' $5 ~ /([[:alpha:]]*,){4}И/ ' /etc/passwd | awk -F ',' ' $1 ~ /[[:alpha:]]+ \<[[:alpha:]]+а\>/ ' | cut -d ':' -f 1 | cut -c 3,4 | sort | uniq -c | sort -nr | head -n 1
+
+zad_7
+find /home/students/s62533 -type f -printf %p %i %T@ %nn | awk ' >1 ' | sort     -rn -k 3 | head -n1 | cut -f 2 -d ' '
+
+zad_8
+cat /etc/passwd | awk -v "UID=$(cat /etc/passwd | sort -k 3 -n -t ':' | head -n 201 | tail -n1 | cut -f 4 -d ':')" -F ':' ' $4==UID' | cut -d ':' -f 5,6 | tr ':' ',' | cut -d ',' -f 1,6| tr ',' ' '
+
+зад_9
+awk -v "planet_type=$(cat planets.txt | tail -n +2 | sort -t ';' -nr -k 3,3 | head -n 1 | cut -d ';' -f 2)" -F ';' '$2==planet_type' planets.txt | sort -nr -k 3,3 | head -n 1 | cut -d ";" -f 1,4 | tr ';' '\t'
+
+зад_10
+cat /etc/passwd | cut -d ':' -f 6 | xargs -I {} find {} -maxdepth 0 -mindepth 0 -type d -printf '%C@ %p\n' 2> /dev/null | awk '$1 > 1551168000 && $1 < 1551176100' | cut -d ' ' -f 2 | awk -F '/' ' $3~/СИ/ ' | xargs -I {} egrep {} /etc/passwd | cut -d ':' -f 1,5 | cut -d ',' -f 1 | tr ':' '\t' | cut -c 2-
+
+зад_11
+home_velin=$(awk -F ':' ' $1~/velin/ { print $6 }' /etc/passwd); inode=$(find "${home_velin}" -type f -printf '%T@ %i\n' | head -n 1 | cut -d ' ' -f 2); find "${home_velin}" -type f -printf '%p %d %i\n' | awk -v INODE="${inode}" '$3==INODE' | sort -sn -t ' ' -k 2,2 | cut -d ' ' -f 2
+
+зад_12
+find ~ -type f -perm 0755 -exec chmod 775 {} \;
+
+зад_13
+kosmodrum=$(cat spacex.txt | tail -n +2 | cut -d '|' -f 2,3 | awk -F '|' ' $2~/Failure/ { print $1 }' | uniq -c | sort -nr | head -n 1 | tr -s ' ' | cut -d ' ' -f 3); awk -v "KOSMODRUM="${kosmodrum}"" -F '|' ' BEGIN{OFS=":"}; $2==KOSMODRUM {print  $1, $3, $4;}' spacex.txt | sort -snr | head -n 1 | cut -d ':' -f 2,3
+
+зад_14
+find ~ -maxdepth 1 -type f -user $(whoami) -exec chmod 664 {} \; 2> /dev/null
