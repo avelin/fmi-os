@@ -47,6 +47,9 @@ int main (int argc, char* argv[])
 			err(1, "Error while writing");
 		}
 	}
+	if (read_size != 0) {
+		err(2, "Error while reading");
+	}
 
 // FIXME
 	lseek(fd1, 0, SEEK_SET);
@@ -56,7 +59,11 @@ int main (int argc, char* argv[])
 			err(1, "Error while writing");
 		}
 	}
+	if (read_size != 0) {
+		err(2, "Error while reading");
+	}
 
+// FIXME
 	lseek(fd2, 0, SEEK_SET);
 	lseek(fd3, 0, SEEK_SET);
 
@@ -64,6 +71,9 @@ int main (int argc, char* argv[])
 		if (write(fd2, &c, read_size) != read_size) {
 			err(1, "Error while writing");
 		}
+	}
+	if (read_size != 0) {
+		err(2, "Error while reading");
 	}
 
 	close(fd1);

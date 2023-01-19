@@ -21,7 +21,7 @@ int main (int argc, char* argv[]){
 		exit(1);
 	}
 
-	while ( read(fd1, &c, 1) > 0 ) {
+	while ( read(fd1, &c, sizeof(c)) == sizeof(c) ) {
 		if (c=='\n') {
 			lines++;
 			words++;

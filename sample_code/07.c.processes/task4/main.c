@@ -18,13 +18,17 @@ int main(void)
 	}
 	if (a > 0) {
 		for (int i = 0; i < n; i++) {
-			printf("father\n");
+//			printf("father\n");
+			write(1,"F", 1);
 		}
 	} else {
 		for (int i = 0; i < n; i++) {
-			printf("son\n");
+//			printf("son\n");
+			write(1,"S", 1);
 		}
 	}
+
+	write(1,"\n", 1);
 
 	exit(0);
 }

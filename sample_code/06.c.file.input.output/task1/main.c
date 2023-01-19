@@ -22,7 +22,7 @@ int main(void)
 		exit(1);
 	}
 
-	while ( read(fd1, &c, 1) ){
+	while ( read(fd1, &c, 1) == 1 ){
 		write(fd2, &c, 1);
 	}
 

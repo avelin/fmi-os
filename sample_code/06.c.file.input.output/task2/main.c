@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
 		exit(1);
 	}
 
-	while (read(fd1, &c, 1)) {
+	while (read(fd1, &c, sizeof(c)) == sizeof(c)) {
 		if (c == '\n') {
 			i=i+1;
 		}
