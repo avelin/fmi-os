@@ -1,0 +1,7 @@
+prefix name,prefix symbol,decimal
+tera,T,1000000000000
+giga,G,1000000000
+mega,M,1000000
+mili,m,0.001
+micro,μ,0.000001
+nano,n,0.000000001

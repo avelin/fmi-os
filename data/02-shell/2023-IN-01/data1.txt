@@ -1,0 +1,16 @@
+Smart Array P420i in Slot 0 (Embedded)                                        
+   Array A                                                                    
+      physicaldrive 1I:2:1                                                    
+         Rotational Speed: 15000                                              
+         Current Temperature (C): 35                                          
+                                                                              
+      physicaldrive 1I:2:2                                                    
+         Interface Type: SAS                                                  
+         Current Temperature (C): 36                                          
+         SMR Support: None                                                    
+                                                                              
+      physicaldrive 1I:2:3                                                    
+         Status: OK                                                           
+         Drive Type: Spare Drive                                              
+         Current Temperature (C): 34                                          
+         Maximum Temperature (C): 42              

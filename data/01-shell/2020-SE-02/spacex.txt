@@ -1,0 +1,9 @@
+date|launch site|outcome|payload
+1291759200|CCAFS|Success|Dragon demo flight and cheese
+1435438800|CCAFS|Failure|SpaceX CRS-7
+1275666300|CCAFS|Success|Dragon Spacecraft Qualification Unit
+1452981600|VAFB|Success|Jason-3
+1498165200|KSC|Success|BulgariaSat-1
+1473454800|CCAFS|Failure|Amos-6
+1517868000|KSC|Success|Elon Musk's Tesla
+1405285200|CCAFS|Success|Orbcomm

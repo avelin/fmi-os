@@ -1,0 +1,15 @@
+Licensed features for this platform:                                        
+                                                                            
+  Maximum Physical Interfaces    : 8                                        
+  VLANs                          : 20                                       
+  Inside Hosts                   : Unlimited                                
+  Failover                       : Active/Standby                           
+  VPN-3DES-AES                   : Enabled                                  
+  *Total VPN Peers                : 25                                      
+  VLAN Trunk Ports               : 8                                        
+                                                                            
+This platform has an ASA 5505 Security Plus license.                        
+                                                                            
+Serial Number: JMX00000000                                                  
+                                                                            
+Running Activation Key: 0e268e0c-c173-4e3b-8dbb-0c6af6c4da67 

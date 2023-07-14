@@ -1,0 +1,7 @@
+    Device    S-state      Status       Sysfs node                            
+    GLAN      S4           *enabled     pci:0000:00:1f.6                      
+    XHC       S3           *enabled     pci:0000:00:14.0                      
+    XDCI      S4           *disabled                                          
+    LID       S4           *enabled     platform:PNP0C0D:00                   
+    HDAS      S4           *disabled    pci:0000:00:1f.3                      
+    RP01      S4           *enabled     pci:0000:00:1c.0  

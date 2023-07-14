@@ -1,0 +1,14 @@
+Smart Array P822 in Slot 1                                                    
+   Array J                                                                    
+      physicaldrive 2E:1:19                                                   
+         Current Temperature (C): 29                                          
+                                                                              
+      physicaldrive 2E:1:20                                                   
+         Current Temperature (C): 28                                          
+                                                                              
+   Unassigned                                                                 
+      physicaldrive 2E:1:21                                                   
+         Current Temperature (C): 30                                          
+                                                                              
+      physicaldrive 2E:1:22                                                   
+         Current Temperature (C): 29            

@@ -1,0 +1,6 @@
+64dae4b798cf66edb2fd8ab704150334  affix
+608cbb3a9afa5c433cfbafc3b323240a  crucifixus
+0a7087da32bbbbc7f41e5b86423528ba  infix
+f39f624923005feff2250cce675b1dd7  postfix
+5711f345cdc72380df30f0da9c106cfa  prefix
+0a59831982cdc88fb14d73436200cba8  suffix

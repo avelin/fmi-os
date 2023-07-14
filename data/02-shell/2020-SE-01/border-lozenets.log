@@ -1,0 +1,15 @@
+Licensed features for this platform:                                      
+                                                                         
+  Maximum Physical Interfaces    : 4                                    
+  VLANs                          : 16                                  
+  Inside Hosts                   : Unlimited                          
+  Failover                       : Active/Active                     
+  VPN-3DES-AES                   : Disabled                         
+  *Total VPN Peers                : 16                             
+  VLAN Trunk Ports               : 4                              
+                                                                 
+This platform has a PIX 535 license.                            
+                                                               
+Serial Number: PIX5350007                                     
+                                                             
+Running Activation Key: 0xd11b3d48                                         
