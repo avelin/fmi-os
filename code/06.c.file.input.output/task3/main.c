@@ -21,17 +21,32 @@ int main (int argc, char* argv[]){
 		exit(1);
 	}
 
+	bool word=false;
+	
 	while ( read(fd1, &c, sizeof(c)) == sizeof(c) ) {
-		if (c=='\n') {
-			lines++;
-			words++;
-		}
-
-		if (c==' ') {
-			words++;
-		}
-
 		chars++;
+		
+		if (c == '\n') {
+			lines++;
+
+			if(word)
+			{
+				words++;
+				word = false;
+			}
+		}
+		else if (c == ' ') {
+			if(word)
+			{
+				words++;
+				word = false;
+			}
+		}
+		else
+		{
+			word = true;	
+		}
+		
 	}
 
 	printf("File %s has:\n%d number of lines.\n%d number of words.\n%d number of chars.\n",
