@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 int main (int argc, char* argv[]){
 	int fd1;
@@ -29,21 +30,18 @@ int main (int argc, char* argv[]){
 		if (c == '\n') {
 			lines++;
 
-			if(word)
-			{
+			if(word) {
 				words++;
 				word = false;
 			}
 		}
 		else if (c == ' ') {
-			if(word)
-			{
+			if(word) {
 				words++;
 				word = false;
 			}
 		}
-		else
-		{
+		else {
 			word = true;	
 		}
 		
