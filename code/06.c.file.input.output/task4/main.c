@@ -51,8 +51,9 @@ int main (int argc, char* argv[])
 		err(2, "Error while reading");
 	}
 
-// FIXME
-	lseek(fd1, 0, SEEK_SET);
+	if(lseek(fd1, 0, SEEK_SET)==-1){
+		err(3,"Error while seeking");
+	}
 
 	while ((read_size = read(fd2, &c, sizeof(c))) > 0 ) {
 		if (write(fd1, &c, read_size) != read_size) {
@@ -63,9 +64,9 @@ int main (int argc, char* argv[])
 		err(2, "Error while reading");
 	}
 
-// FIXME
-	lseek(fd2, 0, SEEK_SET);
-	lseek(fd3, 0, SEEK_SET);
+	if(lseek(fd2, 0, SEEK_SET)==-1 || lseek(fd3,0,SEEK_SET)==-1){
+		err(3,"Error while seeking");
+	}
 
 	while ((read_size = read(fd3, &c, sizeof(c))) > 0) {
 		if (write(fd2, &c, read_size) != read_size) {
